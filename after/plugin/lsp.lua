@@ -1,13 +1,9 @@
 local lsp = require("lsp-zero")
 
+-- Recommended preset (includes sensible defaults)
 lsp.preset("recommended")
 
-lsp.ensure_installed({
-  'tsserver',
-  'rust_analyzer',
-})
-
--- Fix Undefined global 'vim'
+-- LSP setup per server
 lsp.configure('lua_ls', {
     settings = {
         Lua = {
@@ -18,9 +14,9 @@ lsp.configure('lua_ls', {
     }
 })
 
-
+-- Completion setup
 local cmp = require('cmp')
-local cmp_select = {behavior = cmp.SelectBehavior.Select}
+local cmp_select = { behavior = cmp.SelectBehavior.Select }
 local cmp_mappings = lsp.defaults.cmp_mappings({
   ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
   ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
@@ -28,12 +24,10 @@ local cmp_mappings = lsp.defaults.cmp_mappings({
   ["<C-Space>"] = cmp.mapping.complete(),
 })
 
+-- Optional: disable Tab key fallback to avoid conflicts
 cmp_mappings['<Tab>'] = nil
 cmp_mappings['<S-Tab>'] = nil
 
-lsp.setup_nvim_cmp({
-  mapping = cmp_mappings
-})
 
 lsp.set_preferences({
     suggest_lsp_servers = false,
@@ -45,8 +39,9 @@ lsp.set_preferences({
     }
 })
 
+-- on_attach: set keymaps
 lsp.on_attach(function(client, bufnr)
-  local opts = {buffer = bufnr, remap = false}
+  local opts = { buffer = bufnr, remap = false }
 
   vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
   vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
@@ -59,9 +54,22 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
 end)
 
+-- Setup LSPs
 lsp.setup()
 
+-- Diagnostics config
 vim.diagnostic.config({
     virtual_text = true
 })
 
+-- Mason and mason-lspconfig setup
+require("mason").setup()
+require("mason-lspconfig").setup({
+    ensure_installed = {
+        "rust_analyzer",
+        "lua_ls",
+    },
+    handlers = {
+        lsp.default_setup,
+    }
+})

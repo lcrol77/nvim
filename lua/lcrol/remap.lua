@@ -37,6 +37,17 @@ vim.keymap.set("n", "Q", "<nop>")
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
 vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
 
+-- Visual mode formatting (selection only)
+vim.keymap.set("v", "<leader>rf", function()
+  vim.lsp.buf.format({
+    async = true,
+    range = {
+      ["start"] = vim.api.nvim_buf_get_mark(0, "<"),
+      ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
+    },
+  })
+end, { desc = "Format selection" })
+
 vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
 vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
@@ -51,3 +62,11 @@ vim.keymap.set("n", "<leader>mr", "<cmd>CellularAutomaton make_it_rain<CR>");
 vim.keymap.set("n", "<leader><leader>", function()
     vim.cmd("so")
 end)
+
+vim.api.nvim_create_user_command('CopyPath', function()
+  local path = vim.fn.expand('%:p')
+  vim.fn.setreg('+', path)
+  print('Copied: ' .. path)
+end, {})
+
+vim.keymap.set('n', '<leader>cp', ':CopyPath<CR>', { desc = 'Copy file path' })

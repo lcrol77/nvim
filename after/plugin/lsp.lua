@@ -5,14 +5,23 @@ lsp.preset("recommended")
 
 -- LSP setup per server
 lsp.configure('lua_ls', {
-    settings = {
-        Lua = {
-            diagnostics = {
-                globals = { 'vim' }
-            }
-        }
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { 'vim' }
+      }
     }
+  }
 })
+
+lsp.configure('gopls', {
+  settings = {
+    gopls = {
+      buildFlags = { "-tags=integration" },
+    },
+  },
+})
+
 
 -- Completion setup
 local cmp = require('cmp')
@@ -30,13 +39,13 @@ cmp_mappings['<S-Tab>'] = nil
 
 
 lsp.set_preferences({
-    suggest_lsp_servers = false,
-    sign_icons = {
-        error = 'E',
-        warn = 'W',
-        hint = 'H',
-        info = 'I'
-    }
+  suggest_lsp_servers = false,
+  sign_icons = {
+    error = 'E',
+    warn = 'W',
+    hint = 'H',
+    info = 'I'
+  }
 })
 
 -- on_attach: set keymaps
@@ -59,17 +68,17 @@ lsp.setup()
 
 -- Diagnostics config
 vim.diagnostic.config({
-    virtual_text = true
+  virtual_text = true
 })
 
 -- Mason and mason-lspconfig setup
 require("mason").setup()
 require("mason-lspconfig").setup({
-    ensure_installed = {
-        "rust_analyzer",
-        "lua_ls",
-    },
-    handlers = {
-        lsp.default_setup,
-    }
+  ensure_installed = {
+    "rust_analyzer",
+    "lua_ls",
+  },
+  handlers = {
+    lsp.default_setup,
+  }
 })

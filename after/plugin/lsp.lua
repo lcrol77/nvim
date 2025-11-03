@@ -14,15 +14,6 @@ lsp.configure('lua_ls', {
   }
 })
 
-lsp.configure('gopls', {
-  settings = {
-    gopls = {
-      buildFlags = { "-tags=integration" },
-    },
-  },
-})
-
-
 -- Completion setup
 local cmp = require('cmp')
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
@@ -77,8 +68,19 @@ require("mason-lspconfig").setup({
   ensure_installed = {
     "rust_analyzer",
     "lua_ls",
+    "gopls",
   },
   handlers = {
     lsp.default_setup,
+    gopls = function()
+      lsp.configure("gopls", {
+        settings = {
+          gopls = {
+            buildFlags = { "-tags=integration" },
+          },
+        },
+      })
+      lsp.default_setup("gopls")
+    end
   }
 })

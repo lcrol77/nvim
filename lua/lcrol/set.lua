@@ -41,3 +41,7 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
+vim.opt.fixendofline = true   -- ensure a newline at EOF (default)
+vim.opt.endofline = true      -- write the newline when saving
+vim.opt.binary = false         -- keep normal text behavior
+
